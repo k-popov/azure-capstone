@@ -27,14 +27,24 @@
         },
         "jumpBoxPubkey": {
             "type": "string"
+        },
+        "mysqlAdminUsername": {
+            "type": "string"
+        },
+        "mysqlAdminPassword": {
+            "type": "securestring"
         }
     },
     "variables": {
         "storageAccountName": "[toLower(concat(parameters('envPrefix'), 'StorAcc'))]",
-        "subnetName": "[concat(parameters('envPrefix'), 'subnet')]",
+        "jumpboxSubnetName": "[concat(parameters('envPrefix'), 'jbsubnet')]",
+        "vmssSubnetName": "[concat(parameters('envPrefix'), 'vmsssubnet')]",
+        "mysqlSubnetName": "[concat(parameters('envPrefix'), 'mysqlsubnet')]",
         "vNetName": "[concat(parameters('envPrefix'), 'vnetnet')]",
         "vnetAddress": "10.0.0.0/16",
-        "subnetAddress": "10.0.1.0/24",
+        "jumpboxSubnet": "10.0.1.0/24",
+        "vmssSubnet": "10.0.2.0/24",
+        "mysqlSubnet": "10.0.3.0/24",
         "jumphostPubIPName": "[concat(parameters('envPrefix'), 'jbpubip')]",
         "jumpBoxNicName": "[concat(parameters('envPrefix'), 'jbnic')]",
         "jumpBoxVMName": "[concat(parameters('envPrefix'), 'jbox')]",
@@ -48,7 +58,17 @@
         "imageReference": "[variables('osType')]",
         "jumpBoxBuiltInRoleType": "Contributor",
         "jumpBoxRoleDefId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "jumpBoxVmResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]"
+        "jumpBoxVmResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]",
+        "mysqlServerName": "[concat(parameters('envPrefix'), 'mysqlserver')]",
+        "databaseSkuSizeMB": 5120,
+        "databaseSku": {
+            "name": "B_Gen4_1",
+            "tier": "Basic",
+            "size": "[variables('databaseSkuSizeMB')]",
+            "family": "Gen4"
+        },
+        "databaseSkuReference": "[variables('databaseSku')]",
+        "databaseName": "[concat(parameters('envPrefix'), 'db')]"
     },
     "resources": [
         {
@@ -76,9 +96,21 @@
 				    },
 				    "subnets": [
 				        {
-					        "name": "[variables('subnetName')]",
+					        "name": "[variables('jumpboxSubnetName')]",
 					        "properties": {
-					            "addressPrefix": "[variables('subnetAddress')]"
+					            "addressPrefix": "[variables('jumpboxSubnet')]"
+					        }
+				        },
+				        {
+					        "name": "[variables('vmssSubnetName')]",
+					        "properties": {
+					            "addressPrefix": "[variables('vmssSubnet')]"
+					        }
+				        },
+				        {
+					        "name": "[variables('mysqlSubnetName')]",
+					        "properties": {
+					            "addressPrefix": "[variables('mysqlSubnet')]"
 					        }
 				        }
 				    ]
@@ -120,17 +152,17 @@
             }
         },
         {
-    "apiVersion": "2017-09-01",
-     "type": "Microsoft.Authorization/roleAssignments",
-     "name": "[guid(parameters('envPrefix'), resourceGroup().id, 'JBRoleAssignment')]",
-     "properties": {
-            "roleDefinitionId": "[variables('jumpBoxRoleDefId')]",
-            "principalId": "[reference(variables('jumpBoxVmResourceId'), '2017-12-01', 'Full').identity.principalId]",
-            "scope": "[resourceGroup().id]"
-      },
-      "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]"
-        ]
+            "apiVersion": "2017-09-01",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "name": "[guid(parameters('envPrefix'), resourceGroup().id, 'JBRoleAssignment')]",
+            "properties": {
+                "roleDefinitionId": "[variables('jumpBoxRoleDefId')]",
+                "principalId": "[reference(variables('jumpBoxVmResourceId'), '2017-12-01', 'Full').identity.principalId]",
+                "scope": "[resourceGroup().id]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]"
+            ]
 
         },
         {
@@ -183,6 +215,52 @@
                     ]
                 }
             }
+        },
+        {
+            "apiVersion": "2017-12-01-preview",
+            "location": "[parameters('envLocation')]",
+            "name": "[variables('mysqlServerName')]",
+            "type": "Microsoft.DBforMySQL/servers",
+            "properties": {
+                "version": "5.7",
+                "administratorLogin": "[parameters('mysqlAdminUsername')]",
+                "administratorLoginPassword": "[parameters('mysqlAdminPassword')]",
+                "storageProfile": {
+                    "storageMB": "[variables('databaseSkuSizeMB')]",
+                    "backupRetentionDays": "7",
+                    "geoRedundantBackup": "Disabled"
+                },
+                "sslEnforcement": "Disabled"
+            },
+            "sku": "[variables('databaseSkuReference')]",
+            "resources": [
+                {
+                    "name": "[variables('databaseName')]",
+                    "type": "databases",
+                    "apiVersion": "2017-12-01-preview",
+                    "properties": {
+                        "charset": "utf8",
+                        "collation": "utf8_general_ci"
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.DBforMySQL/servers/', variables('mysqlServerName'))]"
+                    ]
+                },
+                {
+                    "type": "firewallrules",
+                    "apiVersion": "2017-12-01-preview",
+                    "dependsOn": [
+                        "[concat('Microsoft.DBforMySQL/servers/', variables('mysqlServerName'),'/databases/' , variables('databaseName'))]",
+                        "[concat('Microsoft.DBforMySQL/servers/', variables('mysqlServerName'))]"
+                    ],
+                    "location": "[parameters('envLocation')]",
+                    "name": "AllowAzureIPs",
+                    "properties": {
+                        "startIpAddress": "10.0.1.0",
+                        "endIpAddress": "10.0.2.254"
+                    }
+                }
+            ]
         }
     ]
 }

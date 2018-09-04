@@ -16,6 +16,12 @@
     },
     "jumpBoxPubkey": {
         "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBEGPv0fFyXbN8uZjkYGHg+H0HlmNvjOm9L7Jssz4NfDXUD+QNlpMr/Zs7y5LPjz9ZMcBLP0X/JRsXX/oN10Z/YaMtS9RxyWARL0SeSYTafdjxPdaG6eQXcDKJ9YDbls6D0b5vFOaI9JAweC/ofy6hzveAq/yTwpnoc8gmL5PSdHQ0OYtJzTH3VjqgbzpsB8/j6UxOQ/JdAX4mCl5bjPCZUo9lDniimbSpq/CgrWjsagB9LdFFo5wY1r4tVzEWF51aKir+ON5ygOibvDJCn9vFDOgrf0V7zd6wv9XIAAOJPcguDo7X47iXY0qZ7wHd/2KSHWPN1gbIImYhNJv/+0HF hub@hub-laptop"
+    },
+    "mysqlAdminUsername": {
+        "value": "guadmin"
+    },
+    "mysqlAdminPassword": {
+        "value": "guadmin1_"
     }
   }
 }
