@@ -45,7 +45,10 @@
             "sku": "18.04-LTS",
             "version": "latest"
         },
-        "imageReference": "[variables('osType')]"
+        "imageReference": "[variables('osType')]",
+        "jumpBoxBuiltInRoleType": "Contributor",
+        "jumpBoxRoleDefId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "jumpBoxVmResourceId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]"
     },
     "resources": [
         {
@@ -117,10 +120,27 @@
             }
         },
         {
+    "apiVersion": "2017-09-01",
+     "type": "Microsoft.Authorization/roleAssignments",
+     "name": "[guid(parameters('envPrefix'), resourceGroup().id, 'JBRoleAssignment')]",
+     "properties": {
+            "roleDefinitionId": "[variables('jumpBoxRoleDefId')]",
+            "principalId": "[reference(variables('jumpBoxVmResourceId'), '2017-12-01', 'Full').identity.principalId]",
+            "scope": "[resourceGroup().id]"
+      },
+      "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]"
+        ]
+
+        },
+        {
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('jumpBoxVMName')]",
             "location": "[parameters('envLocation')]",
             "apiVersion": "2017-03-30",
+            "identity": {
+                "type": "systemAssigned"
+            },
             "dependsOn": [
                 "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('jumpBoxNicName'))]"
