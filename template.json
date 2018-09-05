@@ -33,6 +33,10 @@
         },
         "mysqlAdminPassword": {
             "type": "securestring"
+        },
+        "vmssInstanceCount": {
+            "type": "int",
+            "defaultValue": 1
         }
     },
     "variables": {
@@ -40,11 +44,13 @@
         "jumpboxSubnetName": "[concat(parameters('envPrefix'), 'jbsubnet')]",
         "vmssSubnetName": "[concat(parameters('envPrefix'), 'vmsssubnet')]",
         "mysqlSubnetName": "[concat(parameters('envPrefix'), 'mysqlsubnet')]",
+        "appGWSubnetName": "[concat(parameters('envPrefix'), 'appgwsubnet')]",
         "vNetName": "[concat(parameters('envPrefix'), 'vnetnet')]",
         "vnetAddress": "10.0.0.0/16",
         "jumpboxSubnet": "10.0.1.0/24",
         "vmssSubnet": "10.0.2.0/24",
         "mysqlSubnet": "10.0.3.0/24",
+        "appGWSubnet": "10.0.4.0/29",
         "jumphostPubIPName": "[concat(parameters('envPrefix'), 'jbpubip')]",
         "jumpBoxNicName": "[concat(parameters('envPrefix'), 'jbnic')]",
         "jumpBoxVMName": "[concat(parameters('envPrefix'), 'jbox')]",
@@ -68,7 +74,11 @@
             "family": "Gen4"
         },
         "databaseSkuReference": "[variables('databaseSku')]",
-        "databaseName": "[concat(parameters('envPrefix'), 'db')]"
+        "databaseName": "[concat(parameters('envPrefix'), 'db')]",
+        "vmssName": "[toLower(substring(concat(parameters('envPrefix'), 'vmss'), 0, 9))]",
+        "vmssVMSKU": "Basic_A0",
+        "appGwName": "[concat(parameters('envPrefix'), 'appgw')]",
+        "appGwBePoolName": "[concat(parameters('envPrefix'), 'appgwbepool')]"
     },
     "resources": [
         {
@@ -111,6 +121,12 @@
 					        "name": "[variables('mysqlSubnetName')]",
 					        "properties": {
 					            "addressPrefix": "[variables('mysqlSubnet')]"
+					        }
+				        },
+				        {
+					        "name": "[variables('appGWSubnetName')]",
+					        "properties": {
+					            "addressPrefix": "[variables('appGWSubnet')]"
 					        }
 				        }
 				    ]
@@ -261,6 +277,74 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachineScaleSets",
+            "name": "[variables('vmssName')]",
+            "location": "[parameters('envLocation')]",
+            "apiVersion": "2016-04-30-preview",
+            "sku": {
+                "name": "[variables('vmssVMSKU')]",
+                "tier": "Basic",
+                "capacity": "[parameters('vmssInstanceCount')]"
+            },
+            "properties": {
+                "overprovision": true,
+                "upgradePolicy": {
+                    "mode": "Manual"
+                }
+            },
+            "virtualMachineProfile": {
+                "storageProfile": {
+                    "imageReference": "[variables('imageReference')]",
+                    "osDisk": {
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS"
+                        }
+                    }
+                },
+                "osProfile": {
+                    "adminUsername": "[parameters('jumpBoxUsername')]",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[variables('jumpBoxSshKeyPath')]",
+                                    "keyData": "[parameters('jumpBoxPubkey')]"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaceConfigurations": [
+                        {
+                            "name": "vmssnic",
+                            "properties": {
+                                "primary": true,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "ipconfig",
+                                        "properties": {
+                                            "subnet": {
+                                                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('vNetName'), '/subnets/', variables('vmssSubnetName'))]"
+                                            },
+                                            "ApplicationGatewayBackendAddressPools": [
+                                                {
+                                                    "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/applicationGateways/', variables('appGwName'), '/backendAddressPools/', variables('appGwBePoolName'))]"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
         }
     ]
 }
