@@ -353,6 +353,23 @@
                                 }
                             }
                         ]
+                    },
+                    "extensionProfile":{
+                        "extensions":[
+                            {
+                                "type":"Microsoft.Compute/virtualMachines/extensions",
+                                "name":"vmsscustomscript",
+                                "properties":{
+                                    "publisher":"Microsoft.OSTCExtensions",
+                                    "type":"CustomScriptForLinux",
+                                    "typeHandlerVersion":"1.3",
+                                    "autoUpgradeMinorVersion":true,
+                                    "settings":{
+                                        "commandToExecute":"bash -c 'nohup python -m SimpleHTTPServer &'"
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             }
@@ -409,7 +426,7 @@
                     {
                         "name": "appGwBackendHttpSettings",
                         "properties": {
-                            "Port": 80,
+                            "Port": 8000,
                             "Protocol": "Http",
                             "CookieBasedAffinity": "Disabled"
                         }
