@@ -319,6 +319,7 @@
                         }
                     },
                     "osProfile": {
+                        "computerNamePrefix": "[concat(parameters('envPrefix'), 'ssvm')]",
                         "adminUsername": "[parameters('jumpBoxUsername')]",
                         "linuxConfiguration": {
                             "disablePasswordAuthentication": true,
