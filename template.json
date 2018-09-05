@@ -171,7 +171,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('jumphostPubIPName'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('subnetName'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('jumpboxSubnetName'))]"
                             }
                         }
                     }
@@ -294,6 +294,9 @@
             "name": "[variables('vmssName')]",
             "location": "[parameters('envLocation')]",
             "apiVersion": "2018-06-01",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
+            ],
             "sku": {
                 "name": "[variables('vmssVMSKU')]",
                 "tier": "Basic",
