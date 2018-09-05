@@ -15,7 +15,7 @@
         "value": "hub"
     },
     "jumpBoxPubkey": {
-        "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDBEGPv0fFyXbN8uZjkYGHg+H0HlmNvjOm9L7Jssz4NfDXUD+QNlpMr/Zs7y5LPjz9ZMcBLP0X/JRsXX/oN10Z/YaMtS9RxyWARL0SeSYTafdjxPdaG6eQXcDKJ9YDbls6D0b5vFOaI9JAweC/ofy6hzveAq/yTwpnoc8gmL5PSdHQ0OYtJzTH3VjqgbzpsB8/j6UxOQ/JdAX4mCl5bjPCZUo9lDniimbSpq/CgrWjsagB9LdFFo5wY1r4tVzEWF51aKir+ON5ygOibvDJCn9vFDOgrf0V7zd6wv9XIAAOJPcguDo7X47iXY0qZ7wHd/2KSHWPN1gbIImYhNJv/+0HF hub@hub-laptop"
+        "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJ1dkGeW2cmZDCy71xT+Jcwd29/BiYFlb9L8QRefQGlqrWbpqsd4PnJcUBaVXL911Uc0CLDBIuLuwrvWHlURPzDvHjbtMD9+NiT7/TOPfee/nYvJP5x1YSqMvwTf5xeJt8mWwZmld1WQWU5ZdSazAvHrxJ7bP/a1NCdtSAp8d3FLo1l95Cidv2J3mZ6HkjpfDGMxPG1k7w9XvCfz1dWHS2wf8Oxvlk5ChPoulegjqHUvXxOj6LCpTURoy9uyobQTK+jBG6GktxuxdqwXgDBzB2sx0oI8/nvTE6A+kFfU8jTK6iGPEoUGyox/yIm0DLjuWGDPIHyZYrezR8y15xVlGN hub@hub-laptop"
     },
     "mysqlAdminUsername": {
         "value": "guadmin"
