@@ -21,7 +21,7 @@
         "value": "guadmin"
     },
     "mysqlAdminPassword": {
-        "value": "guadmin1_With999$ault"
+        "value": "sqlsecr3t_With999$ault"
     }
   }
 }
