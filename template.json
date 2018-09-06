@@ -88,7 +88,9 @@
             "type": "Microsoft.Storage/storageAccounts",
             "location": "[parameters('envLocation')]",
             "apiVersion": "2018-02-01",
-            "dependsOn": [],
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
+            ],
             "sku": {
                 "name": "Standard_LRS"
             },
