@@ -311,8 +311,8 @@
                     "location": "[parameters('envLocation')]",
                     "name": "AllowAzureIPs",
                     "properties": {
-                        "startIpAddress": "10.0.1.0",
-                        "endIpAddress": "10.0.2.254"
+                        "startIpAddress": "10.0.0.0",
+                        "endIpAddress": "10.0.1.254"
                     }
                 }
             ]
