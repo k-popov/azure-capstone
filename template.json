@@ -96,9 +96,14 @@
             },
             "properties": {
                 "networkAcls": {
+                    "defaultAction": "Deny",
                     "virtualNetworkRules": [
                         {
-                            "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('jumpboxSubnetName'))]",
+                            "action": "Allow"
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vmssSubnetName'))]",
                             "action": "Allow"
                         }
                     ]
