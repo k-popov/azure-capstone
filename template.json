@@ -47,10 +47,10 @@
         "appGWSubnetName": "[concat(parameters('envPrefix'), 'appgwsubnet')]",
         "vNetName": "[concat(parameters('envPrefix'), 'vnetnet')]",
         "vnetAddress": "10.0.0.0/22",
-        "jumpboxSubnet": "10.0.1.0/24",
-        "vmssSubnet": "10.0.2.0/24",
-        "mysqlSubnet": "10.0.3.0/24",
-        "appGWSubnet": "10.0.4.0/24",
+        "jumpboxSubnet": "10.0.0.0/24",
+        "vmssSubnet": "10.0.1.0/24",
+        "mysqlSubnet": "10.0.2.0/24",
+        "appGWSubnet": "10.0.3.0/24",
         "jumphostPubIPName": "[concat(parameters('envPrefix'), 'jbpubip')]",
         "jumpBoxNicName": "[concat(parameters('envPrefix'), 'jbnic')]",
         "jumpBoxVMName": "[concat(parameters('envPrefix'), 'jbox')]",
@@ -83,38 +83,11 @@
         "appGwID": "[resourceId('Microsoft.Network/applicationGateways',variables('appGwName'))]"
     },
     "resources": [
-        {
-            "name": "[variables('storageAccountName')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "location": "[parameters('envLocation')]",
-            "apiVersion": "2018-02-01",
-            "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
-            ],
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "properties": {
-                "networkAcls": {
-                    "defaultAction": "Deny",
-                    "virtualNetworkRules": [
-                        {
-                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('jumpboxSubnetName'))]",
-                            "action": "Allow"
-                        },
-                        {
-                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vmssSubnetName'))]",
-                            "action": "Allow"
-                        }
-                    ]
-                }
-            }
-        },
     	{
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('vNetName')]",
             "location": "[parameters('envLocation')]",
-            "apiVersion": "2017-04-01",
+            "apiVersion": "2017-06-01",
 			    "properties": {
 				    "addressSpace": {
 				        "addressPrefixes": [
@@ -125,13 +98,23 @@
 				        {
 					        "name": "[variables('jumpboxSubnetName')]",
 					        "properties": {
-					            "addressPrefix": "[variables('jumpboxSubnet')]"
+					            "addressPrefix": "[variables('jumpboxSubnet')]",
+                                "serviceEndpoints": [
+                                    {
+                                        "service": "Microsoft.Storage"
+                                    }
+                                ]
 					        }
 				        },
 				        {
 					        "name": "[variables('vmssSubnetName')]",
 					        "properties": {
-					            "addressPrefix": "[variables('vmssSubnet')]"
+					            "addressPrefix": "[variables('vmssSubnet')]",
+                                "serviceEndpoints": [
+                                    {
+                                        "service": "Microsoft.Storage"
+                                    }
+                                ]
 					        }
 				        },
 				        {
@@ -191,6 +174,33 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "name": "[variables('storageAccountName')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "location": "[parameters('envLocation')]",
+            "apiVersion": "2018-02-01",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "properties": {
+                "networkAcls": {
+                    "defaultAction": "Deny",
+                    "virtualNetworkRules": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('jumpboxSubnetName'))]",
+                            "action": "Allow"
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vNetName'), variables('vmssSubnetName'))]",
+                            "action": "Allow"
+                        }
+                    ]
+                }
             }
         },
         {
