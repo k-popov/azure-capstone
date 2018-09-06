@@ -46,7 +46,7 @@
         "mysqlSubnetName": "[concat(parameters('envPrefix'), 'mysqlsubnet')]",
         "appGWSubnetName": "[concat(parameters('envPrefix'), 'appgwsubnet')]",
         "vNetName": "[concat(parameters('envPrefix'), 'vnetnet')]",
-        "vnetAddress": "10.0.0.0/16",
+        "vnetAddress": "10.0.0.0/22",
         "jumpboxSubnet": "10.0.1.0/24",
         "vmssSubnet": "10.0.2.0/24",
         "mysqlSubnet": "10.0.3.0/24",
@@ -93,6 +93,14 @@
                 "name": "Standard_LRS"
             },
             "properties": {
+                "networkAcls": {
+                    "virtualNetworkRules": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/virtualNetworks', variables('vNetName'))]",
+                            "action": "Allow"
+                        }
+                    ]
+                }
             }
         },
     	{
