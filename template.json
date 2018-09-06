@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "hashSalt": {
+            "type": "string"
+        },
         "envPrefix": {
             "type": "string",
             "defaultValue": "griduAz"
@@ -206,7 +209,7 @@
         {
             "apiVersion": "2017-09-01",
             "type": "Microsoft.Authorization/roleAssignments",
-            "name": "[guid(parameters('envPrefix'), resourceGroup().id, resourceId('Microsoft.Compute/virtualMachines',variables('jumpBoxVMName')))]",
+            "name": "[guid(parameters('envPrefix'), resourceGroup().id, parameters('hashSalt'))]",
             "properties": {
                 "roleDefinitionId": "[variables('jumpBoxRoleDefId')]",
                 "principalId": "[reference(variables('jumpBoxVmResourceId'), '2017-12-01', 'Full').identity.principalId]",

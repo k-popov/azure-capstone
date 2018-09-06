@@ -2,27 +2,30 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-    "envPrefix": {
-        "value": "griduaz"
-    },
-    "envLocation": {
-        "value": "westus"
-    },
-    "jumpBoxVMSize": {
-        "value": "Basic_A0"
-    },
-    "jumpBoxUsername": {
-        "value": "hub"
-    },
-    "jumpBoxPubkey": {
-        "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJ1dkGeW2cmZDCy71xT+Jcwd29/BiYFlb9L8QRefQGlqrWbpqsd4PnJcUBaVXL911Uc0CLDBIuLuwrvWHlURPzDvHjbtMD9+NiT7/TOPfee/nYvJP5x1YSqMvwTf5xeJt8mWwZmld1WQWU5ZdSazAvHrxJ7bP/a1NCdtSAp8d3FLo1l95Cidv2J3mZ6HkjpfDGMxPG1k7w9XvCfz1dWHS2wf8Oxvlk5ChPoulegjqHUvXxOj6LCpTURoy9uyobQTK+jBG6GktxuxdqwXgDBzB2sx0oI8/nvTE6A+kFfU8jTK6iGPEoUGyox/yIm0DLjuWGDPIHyZYrezR8y15xVlGN hub@hub-laptop"
-    },
-    "mysqlAdminUsername": {
-        "value": "guadmin"
-    },
-    "mysqlAdminPassword": {
-        "value": "sqlsecr3t_With999$ault"
+        "hashSalt": {
+            "value": "1"
+        },
+        "envPrefix": {
+            "value": "griduaz"
+        },
+        "envLocation": {
+            "value": "westus"
+        },
+        "jumpBoxVMSize": {
+            "value": "Standard_A0"
+        },
+        "jumpBoxUsername": {
+            "value": "hub"
+        },
+        "jumpBoxPubkey": {
+            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJ1dkGeW2cmZDCy71xT+Jcwd29/BiYFlb9L8QRefQGlqrWbpqsd4PnJcUBaVXL911Uc0CLDBIuLuwrvWHlURPzDvHjbtMD9+NiT7/TOPfee/nYvJP5x1YSqMvwTf5xeJt8mWwZmld1WQWU5ZdSazAvHrxJ7bP/a1NCdtSAp8d3FLo1l95Cidv2J3mZ6HkjpfDGMxPG1k7w9XvCfz1dWHS2wf8Oxvlk5ChPoulegjqHUvXxOj6LCpTURoy9uyobQTK+jBG6GktxuxdqwXgDBzB2sx0oI8/nvTE6A+kFfU8jTK6iGPEoUGyox/yIm0DLjuWGDPIHyZYrezR8y15xVlGN hub@hub-laptop"
+        },
+        "mysqlAdminUsername": {
+            "value": "guadmin"
+        },
+        "mysqlAdminPassword": {
+            "value": "sqlsecr3t_With999$ault"
+        }
     }
-  }
 }
 
