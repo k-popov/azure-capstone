@@ -41,8 +41,8 @@ function set_up_wp() {
     sudo apt-get install -y php-cli php-mysql
     curl -o /var/tmp/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     pushd "$LOCAL_WP_FILES_DIR"
-    php /var/tmp/wp-cli.phar config create --dbname=$DB_NAME --dbuser=$FULL_WP_USER_NAME --dbpass=$DB_WP_PASSWORD --dbhost=$DB_HOST
-    php /var/tmp/wp-cli.phar core install --url=$WP_URL --title="WP-CLI" --admin_user=$WP_ADMIN --admin_password="$WP_PASSWORD" --admin_email=$WP_EMAIL
+    sudo -u nobody php /var/tmp/wp-cli.phar config create --dbname=$DB_NAME --dbuser=$FULL_WP_USER_NAME --dbpass=$DB_WP_PASSWORD --dbhost=$DB_HOST
+    sudo -u nobody php /var/tmp/wp-cli.phar core install --url=$WP_URL --title="WP-CLI" --admin_user=$WP_ADMIN --admin_password="$WP_PASSWORD" --admin_email=$WP_EMAIL
     popd
 }
 
