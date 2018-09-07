@@ -22,6 +22,18 @@
         },
         "mysqlAdminPassword": {
             "value": "sqlsecr3t_With999Symbols"
+        },
+        "wordPressAdminUser": {
+            "value": "wpadmin"
+        },
+        "wordPressAdminPassword": {
+            "value": "SomeSecretWordForWPAdmin"
+        },
+        "wordPressSQLUser": {
+            "value": "wpsql"
+        },
+        "wordPressSQLPassword": {
+            "value": "SomeSecretWordForWPSQL"
         }
     }
 }
