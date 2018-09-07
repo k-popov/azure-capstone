@@ -309,24 +309,10 @@
                         "[concat('Microsoft.DBforMySQL/servers/', variables('mysqlServerName'))]"
                     ],
                     "location": "[parameters('envLocation')]",
-                    "name": "AllowAzureIPs",
+                    "name": "AllowAll",
                     "properties": {
-                        "startIpAddress": "10.0.0.0",
-                        "endIpAddress": "10.0.1.254"
-                    }
-                },
-                {
-                    "type": "firewallrules",
-                    "apiVersion": "2017-12-01-preview",
-                    "dependsOn": [
-                        "[concat('Microsoft.DBforMySQL/servers/', variables('mysqlServerName'),'/databases/' , variables('databaseName'))]",
-                        "[concat('Microsoft.DBforMySQL/servers/', variables('mysqlServerName'))]"
-                    ],
-                    "location": "[parameters('envLocation')]",
-                    "name": "AllowAzureExternalJumpBoxIP",
-                    "properties": {
-                        "startIpAddress": "[reference(variables('jumphostPubIPName')).ipAddress]",
-                        "endIpAddress": "[reference(variables('jumphostPubIPName')).ipAddress]"
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "255.255.255.255"
                     }
                 }
             ]
