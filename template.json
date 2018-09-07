@@ -338,7 +338,7 @@
             "apiVersion": "2018-06-01",
             "dependsOn": [
                 "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
-                "[concat('Microsoft.Network/applicationGateways', variables('appGwName'))]"
+                "[concat('Microsoft.Network/applicationGateways/', variables('appGwName'))]"
             ],
             "sku": {
                 "name": "[variables('vmssVMSKU')]",
