@@ -282,28 +282,29 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('jumpBoxNicName'))]"
                         }
                     ]
-                },
-                "extensionProfile":{
-                    "extensions":[
-                        {
-                            "type":"Microsoft.Compute/virtualMachines/extensions",
-                            "name":"vmsscustomscript",
-                            "properties":{
-                                "publisher":"Microsoft.OSTCExtensions",
-                                "type":"CustomScriptForLinux",
-                                "typeHandlerVersion":"2.0",
-                                "autoUpgradeMinorVersion":true,
-                                "settings":{
-                                    "fileUris": [
-                                        "[concat(variables('scriptsBaseUri'), 'jumpbox_bootstrap.sh')]"
-                                    ]
-                                },
-                                "protectedSettings": {
-                                    "commandToExecute":"[concat('bash jumpbox_bootstrap.sh -a ', variables('storageAccountName'), ' -f wpfiles -k ', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[1].value, ' -h ', variables('mysqlServerName'), '.mysql.database.azure.com', ' -n ', variables('databaseName'), ' -u ', parameters('mysqlAdminUsername'), ' -p ', parameters('mysqlAdminPassword'), ' -l ', parameters('wordPressSQLUser'), ' -s ', parameters('wordPressSQLPassword'), ' -r http://', variables('appGwDomainNameLabel'), '.', parameters('envLocation'), '.cloudapp.azure.com', ' -d ', parameters('wordPressAdminUser'), ' -w ', parameters('wordPressAdminPassword'), ' -e admin@example.com')]"
-                                }
-                            }
-                        }
+                }
+            }
+        },
+        {
+            "type":"Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2017-03-30",
+            "name":"[concat(variables('jumpBoxVMName'), '/jumpboxbootstrap')]",
+            "location": "[parameters('envLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('jumpBoxVMName'))]"
+            ],
+            "properties":{
+                "publisher": "Microsoft.Azure.Extensions",
+                "type":"CustomScript",
+                "typeHandlerVersion":"2.0",
+                "autoUpgradeMinorVersion":true,
+                "settings":{
+                    "fileUris": [
+                        "[concat(variables('scriptsBaseUri'), 'jumpbox_bootstrap.sh')]"
                     ]
+                },
+                "protectedSettings": {
+                    "commandToExecute":"[concat('bash jumpbox_bootstrap.sh -a ', variables('storageAccountName'), ' -f wpfiles -k ', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[1].value, ' -h ', variables('mysqlServerName'), '.mysql.database.azure.com', ' -n ', variables('databaseName'), ' -u ', parameters('mysqlAdminUsername'), ' -p ', parameters('mysqlAdminPassword'), ' -l ', parameters('wordPressSQLUser'), ' -s ', parameters('wordPressSQLPassword'), ' -r http://', variables('appGwDomainNameLabel'), '.', parameters('envLocation'), '.cloudapp.azure.com', ' -d ', parameters('wordPressAdminUser'), ' -w ', parameters('wordPressAdminPassword'), ' -e admin@example.com')]"
                 }
             }
         },
