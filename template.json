@@ -325,8 +325,8 @@
                     "location": "[parameters('envLocation')]",
                     "name": "AllowAzureExternalJumpBoxIP",
                     "properties": {
-                        "startIpAddress": "[reference(variables('jumphostPubIPName')).properties.ipAddress]",
-                        "endIpAddress": "[reference(variables('jumphostPubIPName')).properties.ipAddress]"
+                        "startIpAddress": "[reference(variables('jumphostPubIPName')).ipAddress]",
+                        "endIpAddress": "[reference(variables('jumphostPubIPName')).ipAddress]"
                     }
                 }
             ]
@@ -337,7 +337,8 @@
             "location": "[parameters('envLocation')]",
             "apiVersion": "2018-06-01",
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]"
+                "[concat('Microsoft.Network/virtualNetworks/', variables('vNetName'))]",
+                "[concat('Microsoft.Network/applicationGateways', variables('appGwName'))]"
             ],
             "sku": {
                 "name": "[variables('vmssVMSKU')]",
