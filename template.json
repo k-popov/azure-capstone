@@ -431,8 +431,8 @@
                                 "type":"Microsoft.Compute/virtualMachines/extensions",
                                 "name":"vmsscustomscript",
                                 "properties":{
-                                    "publisher":"Microsoft.OSTCExtensions",
-                                    "type":"CustomScriptForLinux",
+                                    "publisher":"Microsoft.Azure.Extensions",
+                                    "type":"CustomScript",
                                     "typeHandlerVersion":"2.0",
                                     "autoUpgradeMinorVersion":true,
                                     "settings":{
