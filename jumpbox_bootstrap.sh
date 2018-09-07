@@ -35,13 +35,15 @@ function set_up_mysql() {
 }
 
 function set_up_wp() {
+    local FULL_WP_USER_NAME="${DB_WP_USER}@$(echo $DB_HOST | cut -f 1 -d .)"
     cd
     wget http://wordpress.org/latest.tar.gz
     tar xzf latest.tar.gz -C "$LOCAL_WP_FILES_DIR" --strip-components=1
-    sudo apt-get install -y php-cli
+    sudo apt-get install -y php-cli sendmail
     curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     cd "$LOCAL_WP_FILES_DIR"
-    php ~/wp-cli.phar config create --dbname=$DB_NAME --dbuser=$DB_WP_USER --dbpass=$DB_WP_PASSWORD --dbhost=$DB_HOST
+    php ~/wp-cli.phar config create --dbname=$DB_NAME --dbuser=$FULL_WP_USER_NAME --dbpass=$DB_WP_PASSWORD --dbhost=$DB_HOST
+    php ~/wp-cli.phar core install --url=$WP_URL --title="WP-CLI" --admin_user=$WP_ADMIN --admin_password="$WP_PASSWORD" --admin_email=$WP_EMAIL
 }
 
 STORAGE_ACCOUNT_NAME=""
@@ -53,10 +55,14 @@ DB_ADMIN_USER=""
 DB_ADMIN_PASSWORD=""
 DB_WP_USER=""
 DB_WP_PASSWORD=""
+WP_URL=""
+WP_ADMIN=""
+WP_PASSWORD=""
+WP_EMAIL=""
 
 LOCAL_WP_FILES_DIR="/wpfiles"
 
-while getopts "a:f:k:h:n:u:p:l:s:" opt; do
+while getopts "a:f:k:h:n:u:p:l:s:r:d:w:e:" opt; do
     case $opt in
         a)
             STORAGE_ACCOUNT_NAME="$OPTARG"
@@ -85,6 +91,18 @@ while getopts "a:f:k:h:n:u:p:l:s:" opt; do
         s)
             DB_WP_PASSWORD="$OPTARG"
             ;;
+        r)
+            WP_URL="$OPTARG"
+            ;;
+        d)
+            WP_ADMIN="$OPTARG"
+            ;;
+        w)
+            WP_PASSWORD="$OPTARG"
+            ;;
+        e)
+            WP_EMAIL="$OPTARG"
+            ;;
         *)
             echo "Invalid option: -$opt" >&2
             exit 1
@@ -106,6 +124,9 @@ for VAR_NAME in \
     DB_ADMIN_PASSWORD \
     DB_WP_USER \
     DB_WP_PASSWORD \
+    WP_ADMIN \
+    WP_PASSWORD \
+    WP_EMAIL \
     ; do
     eval "test -z \"\$$VAR_NAME\"" && { echo "$VAR_NAME is missing"; exit 1; }
 done
