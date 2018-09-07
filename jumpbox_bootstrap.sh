@@ -27,10 +27,11 @@ function setup_share_mount() {
 }
 
 function set_up_mysql() {
+    local FULL_ADMIN_USER_NAME="${DB_ADMIN_USER}@$(echo $DB_HOST | cut -f 1 -d .)"
     sudo apt-get -y  install mysql-client
     echo "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_WP_USER}'@'%' IDENTIFIED BY '${DB_WP_PASSWORD}';
         FLUSH PRIVILEGES;" | \
-            mysql -h $DB_HOST --user "$DB_ADMIN_USER" -p"$DB_ADMIN_PASSWORD"
+            mysql -h $DB_HOST --user "$FULL_ADMIN_USER_NAME" -p"$DB_ADMIN_PASSWORD"
 }
 
 function set_up_wp() {
