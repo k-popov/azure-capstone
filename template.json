@@ -52,6 +52,9 @@
         },
         "wordPressSQLPassword": {
             "type": "securestring"
+        },
+        "pfxCertificateData": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -469,6 +472,14 @@
                     "tier": "Standard",
                     "capacity": "1"
                 },
+                "sslCertificates": [
+                    {
+                        "name": "appGatewaySslCert",
+                        "properties": {
+                            "data": "[parameters('pfxCertificateData')]"
+                        }
+                    }
+                ],
                 "gatewayIPConfigurations": [
                     {
                         "name": "appGwIpConfig",
@@ -493,7 +504,7 @@
                     {
                         "name": "appGwFrontendPort",
                         "properties": {
-                            "Port": 80
+                            "Port": 443
                         }
                     }
                 ],
@@ -522,8 +533,10 @@
                             "FrontendPort": {
                                 "Id": "[concat(variables('appGwID'), '/frontendPorts/appGwFrontendPort')]"
                             },
-                            "Protocol": "Http",
-                            "SslCertificate": null
+                            "Protocol": "Https",
+                            "SslCertificate": {
+                                "id": "[concat(variables('appGwID'), '/sslCertificates/appGatewaySslCert')]"
+                            }
                         }
                     }
                 ],
