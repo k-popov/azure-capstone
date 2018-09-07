@@ -38,7 +38,7 @@ function set_up_wp() {
     local FULL_WP_USER_NAME="${DB_WP_USER}@$(echo $DB_HOST | cut -f 1 -d .)"
     wget http://wordpress.org/latest.tar.gz
     tar xzf latest.tar.gz -C "$LOCAL_WP_FILES_DIR" --strip-components=1
-    sudo apt-get install -y php-cli sendmail
+    sudo apt-get install -y php-cli php-mysql
     curl -o /var/tmp/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     pushd "$LOCAL_WP_FILES_DIR"
     php /var/tmp/wp-cli.phar config create --dbname=$DB_NAME --dbuser=$FULL_WP_USER_NAME --dbpass=$DB_WP_PASSWORD --dbhost=$DB_HOST
