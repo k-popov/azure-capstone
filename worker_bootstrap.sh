@@ -57,6 +57,7 @@ done
 setup_share_mount "$STORAGE_ACCOUNT_NAME" "$FILE_SHARE_NAME" "$STORAGE_ACCOUNT_KEY"
 sudo mount -v "$LOCAL_WP_FILES_DIR"
 
+sudo apt-get update
 sudo apt-get install -y nginx php-fpm php-mysql
 sudo cp -v worker_nginx_virtualsite.conf /etc/nginx/sites-enabled/default
 sudo systemctl restart nginx
