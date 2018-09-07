@@ -310,7 +310,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute":"[concat('bash jumpbox_bootstrap.sh -a ', variables('storageAccountName'), ' -f wpfiles -k ', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[1].value, ' -h ', variables('mysqlServerName'), '.mysql.database.azure.com', ' -n ', variables('databaseName'), ' -u ', parameters('mysqlAdminUsername'), ' -p ', parameters('mysqlAdminPassword'), ' -l ', parameters('wordPressSQLUser'), ' -s ', parameters('wordPressSQLPassword'), ' -r http://', variables('appGwDomainNameLabel'), '.', parameters('envLocation'), '.cloudapp.azure.com', ' -d ', parameters('wordPressAdminUser'), ' -w ', parameters('wordPressAdminPassword'), ' -e admin@example.com')]"
+                    "commandToExecute":"[concat('bash jumpbox_bootstrap.sh -a ', variables('storageAccountName'), ' -f wpfiles -k ', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[1].value, ' -h ', variables('mysqlServerName'), '.mysql.database.azure.com', ' -n ', variables('databaseName'), ' -u ', parameters('mysqlAdminUsername'), ' -p ', parameters('mysqlAdminPassword'), ' -l ', parameters('wordPressSQLUser'), ' -s ', parameters('wordPressSQLPassword'), ' -r https://', variables('appGwDomainNameLabel'), '.', parameters('envLocation'), '.cloudapp.azure.com', ' -d ', parameters('wordPressAdminUser'), ' -w ', parameters('wordPressAdminPassword'), ' -e admin@example.com')]"
                 }
             }
         },
@@ -506,6 +506,12 @@
                         "properties": {
                             "Port": 443
                         }
+                    },
+                    {
+                        "name": "appGwFrontendPortHTTP",
+                        "properties": {
+                            "port": 80
+                        }
                     }
                 ],
                 "backendAddressPools": [
@@ -538,6 +544,18 @@
                                 "id": "[concat(variables('appGwID'), '/sslCertificates/appGatewaySslCert')]"
                             }
                         }
+                    },
+                    {
+                        "name": "appGWHTTPRedirector",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "Id": "[concat(variables('appGwID'), '/frontendIPConfigurations/appGwFrontendIP')]"
+                            },
+                            "frontendPort": {
+                                "Id": "[concat(variables('appGwID'), '/frontendPorts/appGwFrontendPortHTTP')]"
+                            },
+                            "protocol": "Http"
+                        }
                     }
                 ],
                 "requestRoutingRules": [
@@ -555,6 +573,37 @@
                                 "id": "[concat(variables('appGwID'), '/backendHttpSettingsCollection/appGwBackendHttpSettings')]"
                             }
                         }
+                    },
+                    {
+                        "name": "http2httpsrule",
+                        "properties": {
+                            "ruleType": "Basic",
+                            "httpListener": {
+                                "id": "[concat(variables('appGwID'), '/httpListeners/appGWHTTPRedirector')]"
+                            },
+                            "redirectConfiguration": {
+                                "id": "[concat(variables('appGwID'), '/redirectConfigurations/redrectconfig1')]"
+                            }
+                        }
+                    }
+                ],
+                "redirectConfigurations": [
+                    {
+                        "name": "redrectconfig1",
+                        "properties": {
+                            "redirectType": "Permanent",
+                            "targetListener": {
+                                "id": "[concat(variables('appGwID'), '/httpListeners/appGwHttpListener')]"
+                            },
+                            "includePath": true,
+                            "includeQueryString": true,
+                            "requestRoutingRules": [
+                                {
+                                    "id": "[concat(variables('appGwID'), '/requestRoutingRules/http2httpsrule')]"
+                                }
+                            ]
+                        },
+                        "type": "Microsoft.Network/applicationGateways/redirectConfigurations"
                     }
                 ]
             }
