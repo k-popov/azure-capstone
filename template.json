@@ -97,7 +97,7 @@
         "appGWPubIPName": "[concat(parameters('envPrefix'), 'agwpubip')]",
         "appGwID": "[resourceId('Microsoft.Network/applicationGateways',variables('appGwName'))]",
         "appGwDomainNameLabel": "griduaz",
-        "scriptsBaseUri": "https://raw.githubusercontent.com/k-popov/azure-capstone/master/"
+        "scriptsBaseUri": "https://raw.githubusercontent.com/k-popov/azure-capstone/nossl/"
     },
     "resources": [
     	{
