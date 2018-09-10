@@ -9,7 +9,7 @@
             "value": "westus"
         },
         "jumpBoxVMSize": {
-            "value": "Standard_A0"
+            "value": "Standard_DS2"
         },
         "jumpBoxUsername": {
             "value": "hub"

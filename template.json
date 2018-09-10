@@ -22,7 +22,8 @@
             "defaultValue": "Basic_A0",
             "allowedValues": [
                 "Basic_A0",
-                "Standard_A0"
+                "Standard_A0",
+                "Standard_DS2"
             ]
         },
         "jumpBoxUsername": {
@@ -94,7 +95,7 @@
         "databaseSkuReference": "[variables('databaseSku')]",
         "databaseName": "[concat(parameters('envPrefix'), 'db')]",
         "vmssName": "[toLower(substring(concat(parameters('envPrefix'), 'vmss'), 0, 9))]",
-        "vmssVMSKU": "Basic_A0",
+        "vmssVMSKU": "Standard_DS2",
         "appGwName": "[concat(parameters('envPrefix'), 'appgw')]",
         "appGwBePoolName": "[concat(parameters('envPrefix'), 'appgwbepool')]",
         "appGWPubIPName": "[concat(parameters('envPrefix'), 'agwpubip')]",
@@ -278,7 +279,7 @@
                         "caching": "ReadWrite",
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Standard_LRS"
+                            "storageAccountType": "Premium_LRS"
                         }
                     }
                 },
@@ -372,7 +373,7 @@
             ],
             "sku": {
                 "name": "[variables('vmssVMSKU')]",
-                "tier": "Basic",
+                "tier": "Standard",
                 "capacity": "[parameters('vmssInstanceCount')]"
             },
             "properties": {
@@ -387,7 +388,7 @@
                             "caching": "ReadWrite",
                             "createOption": "FromImage",
                             "managedDisk": {
-                                "storageAccountType": "Standard_LRS"
+                                "storageAccountType": "Premium_LRS"
                             }
                         }
                     },
